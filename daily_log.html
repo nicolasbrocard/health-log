@@ -37,20 +37,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sec{margin-bottom:1.75rem;}
 .sec-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
 .divider{height:.5px;background:var(--border);margin:0 0 1.75rem;}
-
-/* Loading / error states */
-.state-screen{display:none;text-align:center;padding:3rem 1rem;}
-.state-screen.active{display:block;}
-.state-icon{font-size:36px;margin-bottom:12px;}
-.state-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:6px;}
-.state-sub{font-size:13px;color:var(--text2);}
-.state-btn{margin-top:1rem;background:none;border:0.5px solid var(--border);border-radius:var(--r);padding:8px 16px;font-size:13px;color:var(--text2);cursor:pointer;}
-
-/* Edit panel */
 .edit-panel{display:none;margin-bottom:1.5rem;padding:12px;border:0.5px solid var(--border);border-radius:var(--rl);background:var(--bg2);}
 .ep-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:8px;font-weight:600;}
+.ep-note{font-size:11px;color:var(--text3);margin-bottom:10px;line-height:1.4;}
 .ep-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border);}
-.ep-row:last-child{border-bottom:none;}
+.ep-row:last-of-type{border-bottom:none;}
 .ep-name{font-size:13px;color:var(--text);}
 .ep-generic{font-size:11px;color:var(--text3);}
 .ep-remove{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;}
@@ -60,9 +51,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .add-row input:focus{border-color:var(--border2);}
 .add-row button{padding:7px 12px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;}
 .add-row button:active{background:var(--bg2);}
-.ep-saving{font-size:11px;color:var(--text3);margin-top:6px;min-height:16px;}
-
-/* Scales */
 .scale-wrap{display:flex;flex-direction:column;gap:14px;}
 .scale-name{font-size:13px;color:var(--text2);margin-bottom:5px;}
 .scale-row{display:flex;gap:3px;}
@@ -73,8 +61,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .sel-high{background:var(--olive-bg)!important;border-color:var(--olive-border)!important;color:var(--olive-text)!important;font-weight:600!important;}
 .scale-hint{display:flex;justify-content:space-between;margin-top:3px;}
 .scale-hint span{font-size:10px;color:var(--text3);}
-
-/* Meds */
 .med-list{display:flex;flex-direction:column;gap:6px;}
 .med-row{border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);overflow:hidden;transition:border-color .12s,background .12s;}
 .med-row.taken{border-color:var(--green-border);background:var(--green-bg);}
@@ -97,8 +83,6 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .dose-wrap{display:flex;align-items:center;gap:4px;}
 .dose-label{font-size:11px;color:var(--green-text);opacity:.7;}
 .dose-input{width:42px;height:30px;border:0.5px solid var(--green-border);border-radius:6px;text-align:center;font-size:13px;font-weight:500;background:transparent;color:var(--green-text);outline:none;}
-
-/* Field rows */
 .field-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border);gap:10px;}
 .field-row:last-child{border-bottom:none;}
 .field-label{font-size:14px;color:var(--text);padding-top:3px;flex-shrink:0;}
@@ -109,16 +93,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .alc-grp{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;}
 .alc-btn{padding:5px 10px;border:0.5px solid var(--border);background:var(--bg);border-radius:var(--r);font-size:13px;color:var(--text2);cursor:pointer;transition:all .1s;}
 .alc-btn.active{border-color:var(--amber-border);background:var(--amber-bg);color:var(--amber-text);font-weight:500;}
-
-/* Submit */
 .submit-btn{width:100%;padding:14px;background:var(--text);border:none;border-radius:var(--rl);font-size:15px;font-weight:500;color:var(--bg);cursor:pointer;margin-top:.5rem;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
 .submit-btn:active{opacity:.85;}
 .submit-btn.loading{opacity:.6;pointer-events:none;}
 .msg{display:none;margin-top:12px;padding:10px 14px;border-radius:var(--r);font-size:13px;}
 .msg.error{background:var(--red-bg);color:var(--red-text);border:0.5px solid var(--red-border);}
 .msg.ok{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border);}
-
-/* Success */
 .success{display:none;text-align:center;padding:4rem 1rem;}
 .success .icon{font-size:44px;color:var(--green-border);margin-bottom:14px;}
 .success .title{font-size:17px;font-weight:500;color:var(--text);margin-bottom:6px;}
@@ -128,38 +108,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 </head>
 <body>
 
-<!-- Loading screen -->
-<div class="state-screen active" id="screen-loading">
-  <div class="state-icon" style="color:var(--text3);"><i class="ti ti-loader-2" aria-hidden="true"></i></div>
-  <div class="state-title">Loading…</div>
-</div>
-
-<!-- Error screen -->
-<div class="state-screen" id="screen-error">
-  <div class="state-icon" style="color:var(--red-border);"><i class="ti ti-wifi-off" aria-hidden="true"></i></div>
-  <div class="state-title">Could not connect</div>
-  <div class="state-sub">Check your connection and try again.</div>
-  <button class="state-btn" onclick="init()">Retry</button>
-</div>
-
-<!-- Main form -->
-<div class="wrap" id="main" style="display:none;">
-
+<div class="wrap" id="main">
   <div class="top-bar">
     <div class="log-date" id="date-label"></div>
     <button class="edit-btn" onclick="toggleEdit()" id="edit-toggle">
-      <i class="ti ti-settings" aria-hidden="true"></i> Meds
+      <i class="ti ti-settings"></i> Meds
     </button>
   </div>
 
   <div class="edit-panel" id="edit-panel">
     <div class="ep-label">Manage medications</div>
+    <div class="ep-note">Changes save to this device. To sync across devices, update the HTML file on GitHub.</div>
     <div id="ep-list"></div>
     <div class="add-row">
-      <input type="text" id="new-med" placeholder="Brand · Generic (e.g. Melatonin 3mg · Melatonin)" />
+      <input type="text" id="new-med" placeholder="Brand · Generic  e.g. Melatonin 3mg · Melatonin" />
       <button onclick="addMed()">Add</button>
     </div>
-    <div class="ep-saving" id="ep-saving"></div>
   </div>
 
   <div class="sec">
@@ -209,81 +173,61 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
     <div class="field-row">
       <div class="field-label">Notable event</div>
       <div class="tog-grp">
-        <button class="tog-btn active" data-val="none"   onclick="selTog(this,'event')">None</button>
-        <button class="tog-btn"        data-val="travel"  onclick="selTog(this,'event')">Travel</button>
-        <button class="tog-btn"        data-val="social"  onclick="selTog(this,'event')">Social</button>
-        <button class="tog-btn"        data-val="work"    onclick="selTog(this,'event')">Work stress</button>
-        <button class="tog-btn"        data-val="other"   onclick="selTog(this,'event')">Other</button>
+        <button class="tog-btn active" data-val="none"  onclick="selTog(this,'event')">None</button>
+        <button class="tog-btn"        data-val="travel" onclick="selTog(this,'event')">Travel</button>
+        <button class="tog-btn"        data-val="social" onclick="selTog(this,'event')">Social</button>
+        <button class="tog-btn"        data-val="work"   onclick="selTog(this,'event')">Work stress</button>
+        <button class="tog-btn"        data-val="other"  onclick="selTog(this,'event')">Other</button>
       </div>
     </div>
   </div>
 
   <button class="submit-btn" id="submit-btn" onclick="submitLog()">
-    <i class="ti ti-check" aria-hidden="true"></i> Save log
+    <i class="ti ti-check"></i> Save log
   </button>
   <div class="msg error" id="msg-error"></div>
   <div class="msg ok"    id="msg-ok"></div>
 </div>
 
-<!-- Success screen -->
 <div class="success" id="success">
-  <div class="icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+  <div class="icon"><i class="ti ti-circle-check"></i></div>
   <div class="title">Logged</div>
   <div class="sub" id="success-sub"></div>
   <button class="again" onclick="resetForm()">Log another day</button>
 </div>
 
 <script>
-// ── CONFIG — replace with your deployed Apps Script URL ───────────────────
+// ── CONFIG ────────────────────────────────────────────────────────────────────
 const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwDrpohv1Yt4fqI3VtCd134hHTBNqcmu6sU28m2s9Z0Mfidc3cVdSs6bQRYDSkwQxe9lQ/exec';
 
-// ── SCALES ────────────────────────────────────────────────────────────────
-const SCALES = [
-  { key:'mood',        label:'Mood',            lo:'very low',  hi:'excellent',  invert:false },
-  { key:'fatigue',     label:'Fatigue',         lo:'none',      hi:'exhausted',  invert:true  },
-  { key:'heaviness',   label:'Body heaviness',  lo:'none',      hi:'very heavy', invert:true  },
-  { key:'sleep_perc',  label:'Sleep perception',lo:'terrible',  hi:'perfect',    invert:false },
+// ── DEFAULT MEDS (localStorage overrides these after first edit) ───────────────
+const DEFAULT_MEDS = [
+  { id: 'clonazepam',   name: 'Rivotril 0.5mg', generic: 'Clonazepam'   },
+  { id: 'escitalopram', name: 'Lexapro 10mg',   generic: 'Escitalopram' },
+  { id: 'tianeptine',   name: 'Stablon 12.5mg', generic: 'Tianeptine'   },
 ];
 
-// ── STATE ─────────────────────────────────────────────────────────────────
-let meds       = [];
+const SCALES = [
+  { key:'mood',       label:'Mood',            lo:'very low',  hi:'excellent', invert:false },
+  { key:'fatigue',    label:'Fatigue',         lo:'none',      hi:'exhausted', invert:true  },
+  { key:'heaviness',  label:'Body heaviness',  lo:'none',      hi:'very heavy',invert:true  },
+  { key:'sleep_perc', label:'Sleep perception',lo:'terrible',  hi:'perfect',   invert:false },
+];
+
+const MED_KEY = 'hlv3_meds';
+
+// ── STATE ─────────────────────────────────────────────────────────────────────
+let meds       = JSON.parse(localStorage.getItem(MED_KEY) || 'null') || DEFAULT_MEDS;
 let medState   = {};
 let scaleState = {};
 let alcVal     = '0';
 let togState   = { meal:'no', screens:'no', event:'none' };
 let editOpen   = false;
-let saving     = false;
 
-// ── INIT — fetch med list from sheet ─────────────────────────────────────
-async function init() {
-  show('screen-loading');
-  try {
-    const res  = await fetch(SHEET_URL + '?action=getMeds');
-    const data = await res.json();
-    meds = data.meds || [];
-    show('main');
-    buildScales();
-    buildMedList();
-    document.getElementById('date-label').textContent =
-      new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  } catch(e) {
-    show('screen-error');
-  }
-}
+function saveMeds() { localStorage.setItem(MED_KEY, JSON.stringify(meds)); }
 
-function show(id) {
-  ['screen-loading','screen-error','main','success'].forEach(s => {
-    const el = document.getElementById(s);
-    if (!el) return;
-    el.style.display = 'none';
-    el.classList.remove('active');
-  });
-  const target = document.getElementById(id);
-  if (target) { target.style.display = 'block'; target.classList.add('active'); }
-}
-
-// ── SCALES ────────────────────────────────────────────────────────────────
-function getColorCls(val, invert) {
+// ── SCALES ────────────────────────────────────────────────────────────────────
+function colorCls(val, invert) {
   const p = invert ? 1-(val-1)/9 : (val-1)/9;
   return p < 0.34 ? 'sel-low' : p < 0.67 ? 'sel-mid' : 'sel-high';
 }
@@ -304,30 +248,29 @@ function buildScales() {
     for (let i=1;i<=10;i++) {
       const btn = document.createElement('button');
       btn.textContent = i;
-      btn.setAttribute('aria-label', s.label+' '+i);
       btn.onclick = () => {
         scaleState[s.key] = i;
         row.querySelectorAll('button').forEach(b => b.className='');
-        btn.className = getColorCls(i, s.invert);
+        btn.className = colorCls(i, s.invert);
       };
       row.appendChild(btn);
     }
   });
 }
 
-// ── MEDS ──────────────────────────────────────────────────────────────────
+// ── MEDS ──────────────────────────────────────────────────────────────────────
 function buildMedList() {
   const list = document.getElementById('med-list');
   list.innerHTML = '';
   meds.forEach(m => {
-    if (!medState[m.id]) medState[m.id] = {taken:false,tod:'evening',dose:1};
+    if (!medState[m.id]) medState[m.id] = { taken:false, tod:'evening', dose:1 };
     const s = medState[m.id];
     const row = document.createElement('div');
-    row.className = 'med-row'+(s.taken?' taken':'');
+    row.className = 'med-row' + (s.taken?' taken':'');
     row.id = 'mr-'+m.id;
     row.innerHTML = `
       <div class="med-top" onclick="toggleMed('${m.id}')">
-        <div class="med-check"><i class="ti ti-check" aria-hidden="true"></i></div>
+        <div class="med-check"><i class="ti ti-check"></i></div>
         <div class="med-info">
           <div class="med-name">${m.name}</div>
           ${m.generic?`<div class="med-generic">${m.generic}</div>`:''}
@@ -343,8 +286,7 @@ function buildMedList() {
         <div class="dose-wrap">
           <span class="dose-label">×</span>
           <input class="dose-input" type="number" min="0.5" max="5" step="0.5"
-            value="${s.dose}" aria-label="dose"
-            onchange="setDose('${m.id}',this.value)"
+            value="${s.dose}" onchange="setDose('${m.id}',this.value)"
             onclick="event.stopPropagation()"/>
         </div>
       </div>`;
@@ -356,15 +298,15 @@ function toggleMed(id) {
   medState[id].taken = !medState[id].taken;
   document.getElementById('mr-'+id).classList.toggle('taken', medState[id].taken);
 }
-function setTod(e,id,val) {
+function setTod(e, id, val) {
   e.stopPropagation();
   medState[id].tod = val;
   document.getElementById('mr-'+id).querySelectorAll('.tod-btn').forEach(b=>b.classList.remove('active'));
   e.target.classList.add('active');
 }
-function setDose(id,val) { medState[id].dose = parseFloat(val)||1; }
+function setDose(id, val) { medState[id].dose = parseFloat(val)||1; }
 
-// ── EDIT PANEL ────────────────────────────────────────────────────────────
+// ── EDIT PANEL ────────────────────────────────────────────────────────────────
 function buildEditPanel() {
   const el = document.getElementById('ep-list');
   el.innerHTML = '';
@@ -376,7 +318,7 @@ function buildEditPanel() {
         <div class="ep-name">${m.name}</div>
         ${m.generic?`<div class="ep-generic">${m.generic}</div>`:''}
       </div>
-      <button class="ep-remove" onclick="removeMed('${m.id}')" aria-label="remove ${m.name}">×</button>`;
+      <button class="ep-remove" onclick="removeMed('${m.id}')">×</button>`;
     el.appendChild(row);
   });
 }
@@ -385,65 +327,44 @@ function toggleEdit() {
   editOpen = !editOpen;
   document.getElementById('edit-panel').style.display = editOpen?'block':'none';
   document.getElementById('edit-toggle').innerHTML = editOpen
-    ? '<i class="ti ti-x" aria-hidden="true"></i> Done'
-    : '<i class="ti ti-settings" aria-hidden="true"></i> Meds';
+    ? '<i class="ti ti-x"></i> Done'
+    : '<i class="ti ti-settings"></i> Meds';
   if (editOpen) buildEditPanel();
 }
 
-async function addMed() {
-  if (saving) return;
+function addMed() {
   const inp = document.getElementById('new-med');
   const raw = inp.value.trim();
   if (!raw) return;
   const parts = raw.split('·').map(s=>s.trim());
-  const newMed = { id:'med_'+Date.now(), name:parts[0], generic:parts[1]||'' };
-  meds.push(newMed);
+  meds.push({ id:'med_'+Date.now(), name:parts[0], generic:parts[1]||'' });
+  saveMeds();
   inp.value = '';
   buildEditPanel();
   buildMedList();
-  await saveMeds();
 }
 
-async function removeMed(id) {
-  if (saving) return;
+function removeMed(id) {
   meds = meds.filter(m=>m.id!==id);
   delete medState[id];
+  saveMeds();
   buildEditPanel();
   buildMedList();
-  await saveMeds();
 }
 
-async function saveMeds() {
-  saving = true;
-  const status = document.getElementById('ep-saving');
-  status.textContent = 'Saving…';
-  try {
-    await fetch(SHEET_URL, {
-      method:'POST', mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({ action:'saveMeds', meds })
-    });
-    status.textContent = 'Saved ✓';
-    setTimeout(()=>{ status.textContent=''; }, 2000);
-  } catch(e) {
-    status.textContent = 'Save failed — check connection';
-  }
-  saving = false;
-}
-
-// ── SELECTORS ─────────────────────────────────────────────────────────────
+// ── SELECTORS ─────────────────────────────────────────────────────────────────
 function selAlc(btn) {
   document.querySelectorAll('.alc-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   alcVal = btn.dataset.val;
 }
-function selTog(btn,group) {
+function selTog(btn, group) {
   btn.closest('.tog-grp').querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   togState[group] = btn.dataset.val;
 }
 
-// ── SUBMIT ────────────────────────────────────────────────────────────────
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
 async function submitLog() {
   const missing = SCALES.filter(s=>!scaleState[s.key]).map(s=>s.label);
   if (missing.length) { showMsg('error','Please rate: '+missing.join(', ')); return; }
@@ -470,27 +391,28 @@ async function submitLog() {
 
   const btn = document.getElementById('submit-btn');
   btn.classList.add('loading');
-  btn.innerHTML = '<i class="ti ti-loader" aria-hidden="true"></i> Saving…';
+  btn.innerHTML = '<i class="ti ti-loader"></i> Saving…';
 
   try {
-    await fetch(SHEET_URL,{
+    await fetch(SHEET_URL, {
       method:'POST', mode:'no-cors',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify(entry)
     });
-    show('success');
+    document.getElementById('main').style.display='none';
+    document.getElementById('success').style.display='block';
     document.getElementById('success-sub').textContent =
       today.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
   } catch(e) {
     showMsg('error','Could not save — check your connection.');
     btn.classList.remove('loading');
-    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Save log';
+    btn.innerHTML = '<i class="ti ti-check"></i> Save log';
   }
 }
 
-function showMsg(type,text) {
-  ['error','ok'].forEach(t=>{ const el=document.getElementById('msg-'+t); el.style.display='none'; el.textContent=''; });
-  const el=document.getElementById('msg-'+type);
+function showMsg(type, text) {
+  ['error','ok'].forEach(t=>{ const el=document.getElementById('msg-'+t); el.style.display='none'; });
+  const el = document.getElementById('msg-'+type);
   el.textContent=text; el.style.display='block';
   setTimeout(()=>{ el.style.display='none'; },5000);
 }
@@ -500,13 +422,18 @@ function resetForm() {
   togState={meal:'no',screens:'no',event:'none'};
   buildScales(); buildMedList();
   document.querySelectorAll('.alc-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
-  show('main');
+  document.getElementById('main').style.display='block';
+  document.getElementById('success').style.display='none';
   const btn=document.getElementById('submit-btn');
   btn.classList.remove('loading');
-  btn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Save log';
+  btn.innerHTML='<i class="ti ti-check"></i> Save log';
 }
 
-init();
+// ── INIT ──────────────────────────────────────────────────────────────────────
+document.getElementById('date-label').textContent =
+  new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+buildScales();
+buildMedList();
 </script>
 </body>
 </html>
