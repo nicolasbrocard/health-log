@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Daily Health Log</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+:root {
+  --bg:#fafaf8;--bg2:#f2f1ee;--bg3:#e8e7e3;
+  --text:#1a1a18;--text2:#6b6b66;--text3:#a0a09a;
+  --border:rgba(0,0,0,0.1);--border2:rgba(0,0,0,0.18);
+  --green-bg:#e1f5ee;--green-border:#1D9E75;--green-text:#085041;--green-mid:#9FE1CB;
+  --red-bg:#FCEBEB;--red-border:#E24B4A;--red-text:#A32D2D;
+  --amber-bg:#FAEEDA;--amber-border:#BA7517;--amber-text:#854F0B;
+  --olive-bg:#EAF3DE;--olive-border:#639922;--olive-text:#3B6D11;
+  --r:8px;--rl:12px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1c1c1a;--bg2:#252522;--bg3:#2e2e2a;
+    --text:#f0efea;--text2:#a0a098;--text3:#666660;
+    --border:rgba(255,255,255,0.1);--border2:rgba(255,255,255,0.18);
+    --green-bg:#04342C;--green-border:#1D9E75;--green-text:#9FE1CB;--green-mid:#0F6E56;
+    --red-bg:#501313;--red-border:#E24B4A;--red-text:#F7C1C1;
+    --amber-bg:#412402;--amber-border:#BA7517;--amber-text:#FAC775;
+    --olive-bg:#173404;--olive-border:#639922;--olive-text:#C0DD97;
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.wrap{max-width:420px;margin:0 auto;padding:1.25rem 1rem 3rem;}
+.top-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;}
+.log-date{font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.07em;}
+.edit-btn{background:none;border:0.5px solid var(--border);border-radius:var(--r);padding:5px 10px;font-size:12px;color:var(--text2);cursor:pointer;display:flex;align-items:center;gap:5px;}
+.edit-btn:active{background:var(--bg2);}
+.sec{margin-bottom:1.75rem;}
+.sec-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;}
+.divider{height:.5px;background:var(--border);margin:0 0 1.75rem;}
+
+/* Loading / error states */
+.state-screen{display:none;text-align:center;padding:3rem 1rem;}
+.state-screen.active{display:block;}
+.state-icon{font-size:36px;margin-bottom:12px;}
+.state-title{font-size:15px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.state-sub{font-size:13px;color:var(--text2);}
+.state-btn{margin-top:1rem;background:none;border:0.5px solid var(--border);border-radius:var(--r);padding:8px 16px;font-size:13px;color:var(--text2);cursor:pointer;}
+
+/* Edit panel */
+.edit-panel{display:none;margin-bottom:1.5rem;padding:12px;border:0.5px solid var(--border);border-radius:var(--rl);background:var(--bg2);}
+.ep-label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:8px;font-weight:600;}
+.ep-row{display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:0.5px solid var(--border);}
+.ep-row:last-child{border-bottom:none;}
+.ep-name{font-size:13px;color:var(--text);}
+.ep-generic{font-size:11px;color:var(--text3);}
+.ep-remove{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:4px;}
+.ep-remove:active{color:var(--red-text);background:var(--red-bg);}
+.add-row{display:flex;gap:6px;margin-top:10px;}
+.add-row input{flex:1;font-size:13px;padding:7px 10px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);outline:none;}
+.add-row input:focus{border-color:var(--border2);}
+.add-row button{padding:7px 12px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;}
+.add-row button:active{background:var(--bg2);}
+.ep-saving{font-size:11px;color:var(--text3);margin-top:6px;min-height:16px;}
+
+/* Scales */
+.scale-wrap{display:flex;flex-direction:column;gap:14px;}
+.scale-name{font-size:13px;color:var(--text2);margin-bottom:5px;}
+.scale-row{display:flex;gap:3px;}
+.scale-row button{flex:1;height:36px;border:0.5px solid var(--border);background:var(--bg);border-radius:6px;font-size:12px;color:var(--text2);cursor:pointer;transition:all .1s;}
+.scale-row button:active{transform:scale(.95);}
+.sel-low{background:var(--red-bg)!important;border-color:var(--red-border)!important;color:var(--red-text)!important;font-weight:600!important;}
+.sel-mid{background:var(--amber-bg)!important;border-color:var(--amber-border)!important;color:var(--amber-text)!important;font-weight:600!important;}
+.sel-high{background:var(--olive-bg)!important;border-color:var(--olive-border)!important;color:var(--olive-text)!important;font-weight:600!important;}
+.scale-hint{display:flex;justify-content:space-between;margin-top:3px;}
+.scale-hint span{font-size:10px;color:var(--text3);}
+
+/* Meds */
+.med-list{display:flex;flex-direction:column;gap:6px;}
+.med-row{border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);overflow:hidden;transition:border-color .12s,background .12s;}
+.med-row.taken{border-color:var(--green-border);background:var(--green-bg);}
+.med-top{display:flex;align-items:center;padding:10px 12px;cursor:pointer;gap:10px;}
+.med-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--border2);background:var(--bg2);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.med-row.taken .med-check{background:var(--green-border);border-color:var(--green-border);}
+.med-check i{font-size:12px;color:white;opacity:0;transition:opacity .1s;}
+.med-row.taken .med-check i{opacity:1;}
+.med-info{flex:1;}
+.med-name{font-size:13px;font-weight:500;color:var(--text);}
+.med-row.taken .med-name{color:var(--green-text);}
+.med-generic{font-size:11px;color:var(--text3);margin-top:1px;}
+.med-row.taken .med-generic{color:var(--green-border);opacity:.8;}
+.med-detail{display:none;padding:0 12px 10px;}
+.med-row.taken .med-detail{display:flex;align-items:center;gap:8px;}
+.tod-label{font-size:11px;color:var(--green-text);opacity:.7;margin-right:2px;}
+.tod-grp{display:flex;gap:3px;flex:1;}
+.tod-btn{flex:1;padding:5px 0;border:0.5px solid var(--green-border);background:transparent;border-radius:5px;font-size:12px;color:var(--green-text);cursor:pointer;opacity:.55;transition:all .1s;text-align:center;}
+.tod-btn.active{background:var(--green-mid);opacity:1;font-weight:600;}
+.dose-wrap{display:flex;align-items:center;gap:4px;}
+.dose-label{font-size:11px;color:var(--green-text);opacity:.7;}
+.dose-input{width:42px;height:30px;border:0.5px solid var(--green-border);border-radius:6px;text-align:center;font-size:13px;font-weight:500;background:transparent;color:var(--green-text);outline:none;}
+
+/* Field rows */
+.field-row{display:flex;align-items:flex-start;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border);gap:10px;}
+.field-row:last-child{border-bottom:none;}
+.field-label{font-size:14px;color:var(--text);padding-top:3px;flex-shrink:0;}
+.field-sub{font-size:11px;color:var(--text3);margin-top:1px;}
+.tog-grp{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;}
+.tog-btn{padding:5px 10px;border:0.5px solid var(--border);background:var(--bg);border-radius:var(--r);font-size:12px;color:var(--text2);cursor:pointer;transition:all .1s;white-space:nowrap;}
+.tog-btn.active{background:var(--bg3);border-color:var(--border2);color:var(--text);font-weight:500;}
+.alc-grp{display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;}
+.alc-btn{padding:5px 10px;border:0.5px solid var(--border);background:var(--bg);border-radius:var(--r);font-size:13px;color:var(--text2);cursor:pointer;transition:all .1s;}
+.alc-btn.active{border-color:var(--amber-border);background:var(--amber-bg);color:var(--amber-text);font-weight:500;}
+
+/* Submit */
+.submit-btn{width:100%;padding:14px;background:var(--text);border:none;border-radius:var(--rl);font-size:15px;font-weight:500;color:var(--bg);cursor:pointer;margin-top:.5rem;transition:opacity .15s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.submit-btn:active{opacity:.85;}
+.submit-btn.loading{opacity:.6;pointer-events:none;}
+.msg{display:none;margin-top:12px;padding:10px 14px;border-radius:var(--r);font-size:13px;}
+.msg.error{background:var(--red-bg);color:var(--red-text);border:0.5px solid var(--red-border);}
+.msg.ok{background:var(--green-bg);color:var(--green-text);border:0.5px solid var(--green-border);}
+
+/* Success */
+.success{display:none;text-align:center;padding:4rem 1rem;}
+.success .icon{font-size:44px;color:var(--green-border);margin-bottom:14px;}
+.success .title{font-size:17px;font-weight:500;color:var(--text);margin-bottom:6px;}
+.success .sub{font-size:13px;color:var(--text2);}
+.success .again{margin-top:1.5rem;background:none;border:0.5px solid var(--border);border-radius:var(--r);padding:8px 16px;font-size:13px;color:var(--text2);cursor:pointer;}
+</style>
+</head>
+<body>
+
+<!-- Loading screen -->
+<div class="state-screen active" id="screen-loading">
+  <div class="state-icon" style="color:var(--text3);"><i class="ti ti-loader-2" aria-hidden="true"></i></div>
+  <div class="state-title">Loading…</div>
+</div>
+
+<!-- Error screen -->
+<div class="state-screen" id="screen-error">
+  <div class="state-icon" style="color:var(--red-border);"><i class="ti ti-wifi-off" aria-hidden="true"></i></div>
+  <div class="state-title">Could not connect</div>
+  <div class="state-sub">Check your connection and try again.</div>
+  <button class="state-btn" onclick="init()">Retry</button>
+</div>
+
+<!-- Main form -->
+<div class="wrap" id="main" style="display:none;">
+
+  <div class="top-bar">
+    <div class="log-date" id="date-label"></div>
+    <button class="edit-btn" onclick="toggleEdit()" id="edit-toggle">
+      <i class="ti ti-settings" aria-hidden="true"></i> Meds
+    </button>
+  </div>
+
+  <div class="edit-panel" id="edit-panel">
+    <div class="ep-label">Manage medications</div>
+    <div id="ep-list"></div>
+    <div class="add-row">
+      <input type="text" id="new-med" placeholder="Brand · Generic (e.g. Melatonin 3mg · Melatonin)" />
+      <button onclick="addMed()">Add</button>
+    </div>
+    <div class="ep-saving" id="ep-saving"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-label">This morning</div>
+    <div class="scale-wrap" id="scales"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
+    <div class="sec-label">Medications — yesterday</div>
+    <div class="med-list" id="med-list"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
+    <div class="sec-label">Yesterday</div>
+    <div class="field-row">
+      <div>
+        <div class="field-label">Alcohol</div>
+        <div class="field-sub">standard drinks</div>
+      </div>
+      <div class="alc-grp">
+        <button class="alc-btn active" data-val="0"   onclick="selAlc(this)">0</button>
+        <button class="alc-btn"        data-val="0.5" onclick="selAlc(this)">½</button>
+        <button class="alc-btn"        data-val="1"   onclick="selAlc(this)">1</button>
+        <button class="alc-btn"        data-val="1.5" onclick="selAlc(this)">1½</button>
+        <button class="alc-btn"        data-val="2"   onclick="selAlc(this)">2</button>
+        <button class="alc-btn"        data-val="3"   onclick="selAlc(this)">3+</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-label">Heavy meal</div>
+      <div class="tog-grp">
+        <button class="tog-btn active" data-val="no"  onclick="selTog(this,'meal')">No</button>
+        <button class="tog-btn"        data-val="yes" onclick="selTog(this,'meal')">Yes</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-label">Screens before bed</div>
+      <div class="tog-grp">
+        <button class="tog-btn active" data-val="no"  onclick="selTog(this,'screens')">No</button>
+        <button class="tog-btn"        data-val="yes" onclick="selTog(this,'screens')">Yes</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-label">Notable event</div>
+      <div class="tog-grp">
+        <button class="tog-btn active" data-val="none"   onclick="selTog(this,'event')">None</button>
+        <button class="tog-btn"        data-val="travel"  onclick="selTog(this,'event')">Travel</button>
+        <button class="tog-btn"        data-val="social"  onclick="selTog(this,'event')">Social</button>
+        <button class="tog-btn"        data-val="work"    onclick="selTog(this,'event')">Work stress</button>
+        <button class="tog-btn"        data-val="other"   onclick="selTog(this,'event')">Other</button>
+      </div>
+    </div>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" onclick="submitLog()">
+    <i class="ti ti-check" aria-hidden="true"></i> Save log
+  </button>
+  <div class="msg error" id="msg-error"></div>
+  <div class="msg ok"    id="msg-ok"></div>
+</div>
+
+<!-- Success screen -->
+<div class="success" id="success">
+  <div class="icon"><i class="ti ti-circle-check" aria-hidden="true"></i></div>
+  <div class="title">Logged</div>
+  <div class="sub" id="success-sub"></div>
+  <button class="again" onclick="resetForm()">Log another day</button>
+</div>
+
+<script>
+// ── CONFIG — replace with your deployed Apps Script URL ───────────────────
+const SHEET_URL = 'https://script.google.com/macros/s/AKfycbwDrpohv1Yt4fqI3VtCd134hHTBNqcmu6sU28m2s9Z0Mfidc3cVdSs6bQRYDSkwQxe9lQ/exec';
+
+// ── SCALES ────────────────────────────────────────────────────────────────
+const SCALES = [
+  { key:'mood',        label:'Mood',            lo:'very low',  hi:'excellent',  invert:false },
+  { key:'fatigue',     label:'Fatigue',         lo:'none',      hi:'exhausted',  invert:true  },
+  { key:'heaviness',   label:'Body heaviness',  lo:'none',      hi:'very heavy', invert:true  },
+  { key:'sleep_perc',  label:'Sleep perception',lo:'terrible',  hi:'perfect',    invert:false },
+];
+
+// ── STATE ─────────────────────────────────────────────────────────────────
+let meds       = [];
+let medState   = {};
+let scaleState = {};
+let alcVal     = '0';
+let togState   = { meal:'no', screens:'no', event:'none' };
+let editOpen   = false;
+let saving     = false;
+
+// ── INIT — fetch med list from sheet ─────────────────────────────────────
+async function init() {
+  show('screen-loading');
+  try {
+    const res  = await fetch(SHEET_URL + '?action=getMeds');
+    const data = await res.json();
+    meds = data.meds || [];
+    show('main');
+    buildScales();
+    buildMedList();
+    document.getElementById('date-label').textContent =
+      new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  } catch(e) {
+    show('screen-error');
+  }
+}
+
+function show(id) {
+  ['screen-loading','screen-error','main','success'].forEach(s => {
+    const el = document.getElementById(s);
+    if (!el) return;
+    el.style.display = 'none';
+    el.classList.remove('active');
+  });
+  const target = document.getElementById(id);
+  if (target) { target.style.display = 'block'; target.classList.add('active'); }
+}
+
+// ── SCALES ────────────────────────────────────────────────────────────────
+function getColorCls(val, invert) {
+  const p = invert ? 1-(val-1)/9 : (val-1)/9;
+  return p < 0.34 ? 'sel-low' : p < 0.67 ? 'sel-mid' : 'sel-high';
+}
+
+function buildScales() {
+  const wrap = document.getElementById('scales');
+  wrap.innerHTML = '';
+  SCALES.forEach(s => {
+    const div = document.createElement('div');
+    div.innerHTML = `
+      <div class="scale-name">${s.label}
+        <span style="font-size:10px;color:var(--text3);">${s.invert?'(10 = worst)':'(10 = best)'}</span>
+      </div>
+      <div class="scale-row" id="sr-${s.key}"></div>
+      <div class="scale-hint"><span>${s.lo}</span><span>${s.hi}</span></div>`;
+    wrap.appendChild(div);
+    const row = document.getElementById('sr-'+s.key);
+    for (let i=1;i<=10;i++) {
+      const btn = document.createElement('button');
+      btn.textContent = i;
+      btn.setAttribute('aria-label', s.label+' '+i);
+      btn.onclick = () => {
+        scaleState[s.key] = i;
+        row.querySelectorAll('button').forEach(b => b.className='');
+        btn.className = getColorCls(i, s.invert);
+      };
+      row.appendChild(btn);
+    }
+  });
+}
+
+// ── MEDS ──────────────────────────────────────────────────────────────────
+function buildMedList() {
+  const list = document.getElementById('med-list');
+  list.innerHTML = '';
+  meds.forEach(m => {
+    if (!medState[m.id]) medState[m.id] = {taken:false,tod:'evening',dose:1};
+    const s = medState[m.id];
+    const row = document.createElement('div');
+    row.className = 'med-row'+(s.taken?' taken':'');
+    row.id = 'mr-'+m.id;
+    row.innerHTML = `
+      <div class="med-top" onclick="toggleMed('${m.id}')">
+        <div class="med-check"><i class="ti ti-check" aria-hidden="true"></i></div>
+        <div class="med-info">
+          <div class="med-name">${m.name}</div>
+          ${m.generic?`<div class="med-generic">${m.generic}</div>`:''}
+        </div>
+      </div>
+      <div class="med-detail">
+        <span class="tod-label">When</span>
+        <div class="tod-grp">
+          <button class="tod-btn${s.tod==='morning'?' active':''}" onclick="setTod(event,'${m.id}','morning')">AM</button>
+          <button class="tod-btn${s.tod==='midday'?' active':''}"  onclick="setTod(event,'${m.id}','midday')">Noon</button>
+          <button class="tod-btn${s.tod==='evening'?' active':''}" onclick="setTod(event,'${m.id}','evening')">PM</button>
+        </div>
+        <div class="dose-wrap">
+          <span class="dose-label">×</span>
+          <input class="dose-input" type="number" min="0.5" max="5" step="0.5"
+            value="${s.dose}" aria-label="dose"
+            onchange="setDose('${m.id}',this.value)"
+            onclick="event.stopPropagation()"/>
+        </div>
+      </div>`;
+    list.appendChild(row);
+  });
+}
+
+function toggleMed(id) {
+  medState[id].taken = !medState[id].taken;
+  document.getElementById('mr-'+id).classList.toggle('taken', medState[id].taken);
+}
+function setTod(e,id,val) {
+  e.stopPropagation();
+  medState[id].tod = val;
+  document.getElementById('mr-'+id).querySelectorAll('.tod-btn').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+}
+function setDose(id,val) { medState[id].dose = parseFloat(val)||1; }
+
+// ── EDIT PANEL ────────────────────────────────────────────────────────────
+function buildEditPanel() {
+  const el = document.getElementById('ep-list');
+  el.innerHTML = '';
+  meds.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'ep-row';
+    row.innerHTML = `
+      <div>
+        <div class="ep-name">${m.name}</div>
+        ${m.generic?`<div class="ep-generic">${m.generic}</div>`:''}
+      </div>
+      <button class="ep-remove" onclick="removeMed('${m.id}')" aria-label="remove ${m.name}">×</button>`;
+    el.appendChild(row);
+  });
+}
+
+function toggleEdit() {
+  editOpen = !editOpen;
+  document.getElementById('edit-panel').style.display = editOpen?'block':'none';
+  document.getElementById('edit-toggle').innerHTML = editOpen
+    ? '<i class="ti ti-x" aria-hidden="true"></i> Done'
+    : '<i class="ti ti-settings" aria-hidden="true"></i> Meds';
+  if (editOpen) buildEditPanel();
+}
+
+async function addMed() {
+  if (saving) return;
+  const inp = document.getElementById('new-med');
+  const raw = inp.value.trim();
+  if (!raw) return;
+  const parts = raw.split('·').map(s=>s.trim());
+  const newMed = { id:'med_'+Date.now(), name:parts[0], generic:parts[1]||'' };
+  meds.push(newMed);
+  inp.value = '';
+  buildEditPanel();
+  buildMedList();
+  await saveMeds();
+}
+
+async function removeMed(id) {
+  if (saving) return;
+  meds = meds.filter(m=>m.id!==id);
+  delete medState[id];
+  buildEditPanel();
+  buildMedList();
+  await saveMeds();
+}
+
+async function saveMeds() {
+  saving = true;
+  const status = document.getElementById('ep-saving');
+  status.textContent = 'Saving…';
+  try {
+    await fetch(SHEET_URL, {
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ action:'saveMeds', meds })
+    });
+    status.textContent = 'Saved ✓';
+    setTimeout(()=>{ status.textContent=''; }, 2000);
+  } catch(e) {
+    status.textContent = 'Save failed — check connection';
+  }
+  saving = false;
+}
+
+// ── SELECTORS ─────────────────────────────────────────────────────────────
+function selAlc(btn) {
+  document.querySelectorAll('.alc-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  alcVal = btn.dataset.val;
+}
+function selTog(btn,group) {
+  btn.closest('.tog-grp').querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  togState[group] = btn.dataset.val;
+}
+
+// ── SUBMIT ────────────────────────────────────────────────────────────────
+async function submitLog() {
+  const missing = SCALES.filter(s=>!scaleState[s.key]).map(s=>s.label);
+  if (missing.length) { showMsg('error','Please rate: '+missing.join(', ')); return; }
+
+  const today = new Date();
+  const entry = {
+    action: 'log',
+    date:   today.toISOString().split('T')[0],
+    mood:             scaleState.mood,
+    fatigue:          scaleState.fatigue,
+    body_heaviness:   scaleState.heaviness,
+    sleep_perception: scaleState.sleep_perc,
+    alcohol_units:    alcVal,
+    heavy_meal:       togState.meal,
+    screens_before_bed: togState.screens,
+    notable_event:    togState.event,
+  };
+  meds.forEach(m => {
+    const s = medState[m.id];
+    entry['med_'+m.id+'_taken'] = (s&&s.taken)?1:0;
+    entry['med_'+m.id+'_tod']   = (s&&s.taken)?s.tod:'';
+    entry['med_'+m.id+'_dose']  = (s&&s.taken)?s.dose:'';
+  });
+
+  const btn = document.getElementById('submit-btn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<i class="ti ti-loader" aria-hidden="true"></i> Saving…';
+
+  try {
+    await fetch(SHEET_URL,{
+      method:'POST', mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(entry)
+    });
+    show('success');
+    document.getElementById('success-sub').textContent =
+      today.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  } catch(e) {
+    showMsg('error','Could not save — check your connection.');
+    btn.classList.remove('loading');
+    btn.innerHTML = '<i class="ti ti-check" aria-hidden="true"></i> Save log';
+  }
+}
+
+function showMsg(type,text) {
+  ['error','ok'].forEach(t=>{ const el=document.getElementById('msg-'+t); el.style.display='none'; el.textContent=''; });
+  const el=document.getElementById('msg-'+type);
+  el.textContent=text; el.style.display='block';
+  setTimeout(()=>{ el.style.display='none'; },5000);
+}
+
+function resetForm() {
+  medState={}; scaleState={}; alcVal='0';
+  togState={meal:'no',screens:'no',event:'none'};
+  buildScales(); buildMedList();
+  document.querySelectorAll('.alc-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  show('main');
+  const btn=document.getElementById('submit-btn');
+  btn.classList.remove('loading');
+  btn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Save log';
+}
+
+init();
+</script>
+</body>
+</html>
