@@ -141,6 +141,13 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
   <div class="divider"></div>
 
   <div class="sec">
+    <div class="sec-label">Last night — mind &amp; stress</div>
+    <div class="scale-wrap" id="scales-eve"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="sec">
     <div class="sec-label">Yesterday</div>
     <div class="field-row">
       <div>
@@ -180,6 +187,38 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="tog-btn"        data-val="other"  onclick="selTog(this,'event')">Other</button>
       </div>
     </div>
+    <div class="field-row">
+      <div>
+        <div class="field-label">Caffeine</div>
+        <div class="field-sub">latest intake</div>
+      </div>
+      <div class="tog-grp">
+        <button class="tog-btn"        data-val="none"      onclick="selTog(this,'caffeine')">None</button>
+        <button class="tog-btn active" data-val="am"        onclick="selTog(this,'caffeine')">Morning</button>
+        <button class="tog-btn"        data-val="afternoon" onclick="selTog(this,'caffeine')">Afternoon</button>
+        <button class="tog-btn"        data-val="evening"   onclick="selTog(this,'caffeine')">Evening</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div>
+        <div class="field-label">Last meal</div>
+        <div class="field-sub">time of dinner</div>
+      </div>
+      <div class="tog-grp">
+        <button class="tog-btn"        data-val="before7" onclick="selTog(this,'last_meal')">&lt;7pm</button>
+        <button class="tog-btn active" data-val="7_9"     onclick="selTog(this,'last_meal')">7–9</button>
+        <button class="tog-btn"        data-val="after9"  onclick="selTog(this,'last_meal')">&gt;9pm</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-label">Bedroom temp</div>
+      <div class="tog-grp">
+        <button class="tog-btn"        data-val="cool" onclick="selTog(this,'bedroom_temp')">Cool</button>
+        <button class="tog-btn active" data-val="ok"   onclick="selTog(this,'bedroom_temp')">OK</button>
+        <button class="tog-btn"        data-val="warm" onclick="selTog(this,'bedroom_temp')">Warm</button>
+        <button class="tog-btn"        data-val="hot"  onclick="selTog(this,'bedroom_temp')">Hot</button>
+      </div>
+    </div>
   </div>
 
   <button class="submit-btn" id="submit-btn" onclick="submitLog()">
@@ -212,6 +251,13 @@ const SCALES = [
   { key:'fatigue',    label:'Fatigue',         lo:'none',      hi:'exhausted', invert:true  },
   { key:'heaviness',  label:'Body heaviness',  lo:'none',      hi:'very heavy',invert:true  },
   { key:'sleep_perc', label:'Sleep perception',lo:'terrible',  hi:'perfect',   invert:false },
+  { key:'awakening_rumination', label:'Mind racing on waking', lo:'calm', hi:'racing', invert:true },
+];
+
+// Evening / last-night items (rendered in their own section)
+const SCALES_EVE = [
+  { key:'presleep_rumination', label:'Mind racing before sleep', lo:'calm', hi:'racing', invert:true },
+  { key:'work_stress',         label:'Work stress yesterday',    lo:'none', hi:'severe', invert:true },
 ];
 
 const MED_KEY = 'hlv3_meds';
@@ -221,7 +267,7 @@ let meds       = JSON.parse(localStorage.getItem(MED_KEY) || 'null') || DEFAULT_
 let medState   = {};
 let scaleState = {};
 let alcVal     = '0';
-let togState   = { meal:'no', screens:'no', event:'none' };
+let togState   = { meal:'no', screens:'no', event:'none', caffeine:'am', last_meal:'7_9', bedroom_temp:'ok' };
 let editOpen   = false;
 
 function saveMeds() { localStorage.setItem(MED_KEY, JSON.stringify(meds)); }
@@ -232,10 +278,10 @@ function colorCls(val, invert) {
   return p < 0.34 ? 'sel-low' : p < 0.67 ? 'sel-mid' : 'sel-high';
 }
 
-function buildScales() {
-  const wrap = document.getElementById('scales');
+function buildScalesInto(arr, containerId) {
+  const wrap = document.getElementById(containerId);
   wrap.innerHTML = '';
-  SCALES.forEach(s => {
+  arr.forEach(s => {
     const div = document.createElement('div');
     div.innerHTML = `
       <div class="scale-name">${s.label}
@@ -256,6 +302,11 @@ function buildScales() {
       row.appendChild(btn);
     }
   });
+}
+
+function buildScales() {
+  buildScalesInto(SCALES, 'scales');
+  buildScalesInto(SCALES_EVE, 'scales-eve');
 }
 
 // ── MEDS ──────────────────────────────────────────────────────────────────────
@@ -366,7 +417,7 @@ function selTog(btn, group) {
 
 // ── SUBMIT ────────────────────────────────────────────────────────────────────
 async function submitLog() {
-  const missing = SCALES.filter(s=>!scaleState[s.key]).map(s=>s.label);
+  const missing = [...SCALES, ...SCALES_EVE].filter(s=>!scaleState[s.key]).map(s=>s.label);
   if (missing.length) { showMsg('error','Please rate: '+missing.join(', ')); return; }
 
   const today = new Date();
@@ -377,10 +428,16 @@ async function submitLog() {
     fatigue:          scaleState.fatigue,
     body_heaviness:   scaleState.heaviness,
     sleep_perception: scaleState.sleep_perc,
+    awakening_rumination: scaleState.awakening_rumination,
+    presleep_rumination:  scaleState.presleep_rumination,
+    work_stress:          scaleState.work_stress,
     alcohol_units:    alcVal,
     heavy_meal:       togState.meal,
     screens_before_bed: togState.screens,
     notable_event:    togState.event,
+    caffeine_timing:  togState.caffeine,
+    last_meal_time:   togState.last_meal,
+    bedroom_temp:     togState.bedroom_temp,
   };
   meds.forEach(m => {
     const s = medState[m.id];
@@ -419,7 +476,7 @@ function showMsg(type, text) {
 
 function resetForm() {
   medState={}; scaleState={}; alcVal='0';
-  togState={meal:'no',screens:'no',event:'none'};
+  togState={meal:'no',screens:'no',event:'none',caffeine:'am',last_meal:'7_9',bedroom_temp:'ok'};
   buildScales(); buildMedList();
   document.querySelectorAll('.alc-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
   document.getElementById('main').style.display='block';
