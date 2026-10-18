@@ -142,6 +142,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 
   <div class="sec">
     <div class="sec-label">Yesterday</div>
+    <div class="scale-wrap" id="scales-y" style="margin-bottom:6px;"></div>
     <div class="field-row">
       <div>
         <div class="field-label">Alcohol</div>
@@ -180,6 +181,29 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
         <button class="tog-btn"        data-val="other"  onclick="selTog(this,'event')">Other</button>
       </div>
     </div>
+    <div class="field-row">
+      <div class="field-label">Caffeine</div>
+      <div class="tog-grp">
+        <button class="tog-btn active" data-val="none"      onclick="selTog(this,'caffeine')">None</button>
+        <button class="tog-btn"        data-val="morning"   onclick="selTog(this,'caffeine')">Morning</button>
+        <button class="tog-btn"        data-val="afternoon" onclick="selTog(this,'caffeine')">Afternoon</button>
+        <button class="tog-btn"        data-val="evening"   onclick="selTog(this,'caffeine')">Evening</button>
+      </div>
+    </div>
+    <div class="field-row">
+      <div>
+        <div class="field-label">Last meal time</div>
+        <div class="field-sub">optional</div>
+      </div>
+      <input type="time" id="last-meal" style="font-size:14px;padding:5px 8px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);" />
+    </div>
+    <div class="field-row">
+      <div>
+        <div class="field-label">Bedroom temp</div>
+        <div class="field-sub">°C, optional</div>
+      </div>
+      <input type="number" id="bedroom-temp" min="10" max="40" step="0.5" placeholder="26" style="width:72px;font-size:14px;padding:5px 8px;border:0.5px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text);text-align:center;" />
+    </div>
   </div>
 
   <button class="submit-btn" id="submit-btn" onclick="submitLog()">
@@ -213,16 +237,28 @@ const SCALES = [
   { key:'fatigue',    label:'Fatigue',         lo:'none',      hi:'exhausted', invert:true  },
   { key:'heaviness',  label:'Body heaviness',  lo:'none',      hi:'very heavy',invert:true  },
   { key:'sleep_perc', label:'Sleep perception',lo:'terrible',  hi:'perfect',   invert:false },
+  { key:'wake_rum',   label:'Rumination on waking', lo:'none', hi:'constant',  invert:true  },
+  // Yesterday evening / day
+  { key:'pre_rum',    label:'Rumination before sleep', lo:'none', hi:'constant', invert:true, y:true },
+  { key:'work_stress',label:'Work stress',     lo:'none',      hi:'extreme',   invert:true, y:true },
 ];
 
 const MED_KEY = 'hlv3_meds';
 
 // ── STATE ─────────────────────────────────────────────────────────────────────
-let meds       = JSON.parse(localStorage.getItem(MED_KEY) || 'null') || DEFAULT_MEDS;
+let meds       = JSON.parse(localStorage.getItem(MED_KEY) || 'null') || DEFAULT_MEDS.slice();
+// One-time migration: add Dayvigo to devices whose med list was saved before it existed
+try {
+  if (!localStorage.getItem('hlv3_mig_dayvigo')) {
+    if (!meds.some(m=>m.id==='dayvigo')) meds.push(DEFAULT_MEDS.find(m=>m.id==='dayvigo'));
+    localStorage.setItem(MED_KEY, JSON.stringify(meds));
+    localStorage.setItem('hlv3_mig_dayvigo', '1');
+  }
+} catch(e) {}
 let medState   = {};
 let scaleState = {};
 let alcVal     = '0';
-let togState   = { meal:'no', screens:'no', event:'none' };
+let togState   = { meal:'no', screens:'no', event:'none', caffeine:'none' };
 let editOpen   = false;
 
 function saveMeds() { localStorage.setItem(MED_KEY, JSON.stringify(meds)); }
@@ -234,9 +270,10 @@ function colorCls(val, invert) {
 }
 
 function buildScales() {
-  const wrap = document.getElementById('scales');
-  wrap.innerHTML = '';
+  document.getElementById('scales').innerHTML = '';
+  document.getElementById('scales-y').innerHTML = '';
   SCALES.forEach(s => {
+    const wrap = document.getElementById(s.y ? 'scales-y' : 'scales');
     const div = document.createElement('div');
     div.innerHTML = `
       <div class="scale-name">${s.label}
@@ -338,7 +375,9 @@ function addMed() {
   const raw = inp.value.trim();
   if (!raw) return;
   const parts = raw.split('·').map(s=>s.trim());
-  meds.push({ id:'med_'+Date.now(), name:parts[0], generic:parts[1]||'' });
+  const slug = (parts[1]||parts[0]).toLowerCase().replace(/[^a-z0-9]+/g,'');
+  if (meds.some(m=>m.id===slug)) return;
+  meds.push({ id:slug, name:parts[0], generic:parts[1]||'' });
   saveMeds();
   inp.value = '';
   buildEditPanel();
@@ -382,6 +421,12 @@ async function submitLog() {
     heavy_meal:       togState.meal,
     screens_before_bed: togState.screens,
     notable_event:    togState.event,
+    awakening_rumination: scaleState.wake_rum,
+    presleep_rumination:  scaleState.pre_rum,
+    work_stress:          scaleState.work_stress,
+    caffeine_timing:      togState.caffeine,
+    last_meal_time:       document.getElementById('last-meal').value || '',
+    bedroom_temp:         document.getElementById('bedroom-temp').value || '',
   };
   meds.forEach(m => {
     const s = medState[m.id];
@@ -420,9 +465,11 @@ function showMsg(type, text) {
 
 function resetForm() {
   medState={}; scaleState={}; alcVal='0';
-  togState={meal:'no',screens:'no',event:'none'};
+  togState={meal:'no',screens:'no',event:'none',caffeine:'none'};
   buildScales(); buildMedList();
+  document.getElementById('last-meal').value=''; document.getElementById('bedroom-temp').value='';
   document.querySelectorAll('.alc-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
+  document.querySelectorAll('.tog-grp').forEach(g=>g.querySelectorAll('.tog-btn').forEach((b,i)=>b.classList.toggle('active',i===0)));
   document.getElementById('main').style.display='block';
   document.getElementById('success').style.display='none';
   const btn=document.getElementById('submit-btn');
